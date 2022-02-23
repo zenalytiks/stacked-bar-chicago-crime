@@ -30,27 +30,38 @@ dfd.read_json("https://raw.githubusercontent.com/kim785/Project2/main/static/dum
       const df_filtered = df.query({ column: "primary_type", is: "==", to: type});
       df_bar = df_filtered.rename({ mapper: {"0": "crime_month_name","1":"primary_type","2":"reported_crime"}});
       traces.push({
-        x: df_bar['crime_month_name'].values,
-        y: df_bar['reported_crime'].values,
+        data: df_bar['reported_crime'].values,
         name: type,
-        type: 'bar',
-        marker:{color:colors[type]}
+        color:colors[type]
       });
     }
 
-    var data = traces;
-    var layout = {
-      title:{text:'Chicago Crime 2020',x:0.5,font:{size:50}},
-      font:{family:'Ubuntu',size:28},
-      legend:{font:{size:18}},
-      margin:{l:200,r:150,b:150,t:150,pad:20},
-      xaxis:{title:"Months",showgrid:false,zeroline:false},
-      yaxis:{title:"Top 10 Crimes Reported",showgrid:false,zeroline:false},
-      barmode: 'stack'
-    };
+    Highcharts.chart('gd', {
+    chart: {
+      type: 'bar'
+    },
+    title: {
+      text: 'Chicago Crime 2020'
+    },
+    xAxis: {
+      categories: df['crime_month_name'].unique().values
+    },
+    yAxis: {
+      min: 0,
+      title: {
+        text: 'Total fruit consumption'
+      }
+    },
+    legend: {
+      reversed: true
+    },
+    plotOptions: {
+      series: {
+        stacking: 'normal'
+      }
+    },
+    series: traces
+  });
 
-    Plotly.newPlot('gd', data, layout);
 
-   }).catch(err=>{
-      console.log(err);
-   })
+});
